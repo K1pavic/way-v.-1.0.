@@ -1,1 +1,25 @@
-/* Empty. Add your own CSS if you like */
+.center {
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+    text-align: center;
+}
+
+.gray {
+    background-color: #3c3c3c;
+}
+
+.started {
+    padding-top: 50%;
+    padding-bottom: 20%;
+}
+
+.text_pad {
+    margin: 5px;
+    padding-top: 10%;
+    padding-bottom: 10%;
+}
+
+.bwidth {
+    width: 60%;
+}
