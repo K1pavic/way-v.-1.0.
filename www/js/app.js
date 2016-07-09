@@ -28,7 +28,14 @@ $urlRouterProvider.otherwise("/");
     })
     .state('profile', {
         url: '/profile',
-        templateUrl: 'views/profile.html'
+        views: {
+            '': {
+                templateUrl: 'views/profile.html'
+            },
+            'tabs@profile': {
+                templateUrl: 'templates/tabs.html'
+            }
+        }
     })
     .state('map', {
         url: '/map',
