@@ -26,41 +26,39 @@ $urlRouterProvider.otherwise("/");
         url: '/log-in',
         templateUrl: 'views/log-in.html'
     })
-    .state('profile', {
-        url: '/profile',
+    .state('tab', {
+        url: "/tab",
+        abstract: true,
+        templateUrl: "templates/tab.html"
+    })
+
+    // Each tab has its own nav history stack:
+
+    .state('tab.home', {
+        url: '/home',
         views: {
-            '': {
-                templateUrl: 'views/profile.html'
-            },
-            'tabs@profile': {
-                templateUrl: 'templates/tabs.html'
-            }
+            'tab-home': {templateUrl: 'templates/tab-home.html'}
         }
     })
-    .state('map', {
+    .state('tab.map', {
         url: '/map',
-        templateUrl: 'views/map.html'
+        views: {
+            'tab-map': {templateUrl: 'templates/tab-map.html'}
+        }
     })
-    .state('new-meeting', {
+    .state('tab.new-meeting', {
         url: '/new-meeting',
-        templateUrl: 'views/new-meeting.html'
+        views: {
+            'tab-new-meeting': {templateUrl: 'templates/tab-new-meeting.html'}
+        }
     })
-    .state('meeting', {
-        url: '/meeting',
-        templateUrl: 'views/meeting.html'
-    })
-    .state('more', {
+    .state('tab.more', {
         url: '/more',
-        templateUrl: 'views/more.html'
+        views: {
+            'tab-more': {templateUrl: 'templates/tab-more.html'}
+        }
     })
-    .state('location-settings', {
-        url: '/location-settings',
-        templateUrl: 'views/location-settings.html'
-    })
-    .state('add-friends', {
-        url: '/add-friends',
-        templateUrl: 'views/add-friends.html'
-    })
+
 });
 
 myApp.run(function ($ionicPlatform) {
