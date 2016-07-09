@@ -1,6 +1,6 @@
 ﻿<!DOCTYPE html>
 <html>
-  <head>
+<head>
     <meta charset="utf-8">
     <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
     <title>WAY</title>
@@ -11,7 +11,6 @@
     <!-- IF using Sass (run gulp sass first), then uncomment below and remove the CSS includes above
     <link href="css/ionic.app.css" rel="stylesheet">
     -->
-
     <!-- ionic/angularjs js -->
     <script src="lib/ionic/js/ionic.bundle.js"></script>
 
@@ -20,29 +19,18 @@
 
     <!-- your app's js -->
     <script src="js/app.js"></script>
-  </head>
-  <body ng-app="starter">
+</head>
+<body ng-app="myApp">
 
-    <ion-pane class="gray">
+        <ion-nav-bar class="bar-assertive">
+            <ion-nav-back-button class="button-clear">
+                <i class="ion-arrow-left-c"></i> Back
+            </ion-nav-back-button>
+        </ion-nav-bar>
 
-        <div class="row started">
-            <div class="col col-80 col-center center">
-                <h1 class="light">Get Started</h1>
-            </div>
-        </div>
+        <ion-nav-view>
 
-        <div class="row">
-            <div class="col col-60 center">
+        </ion-nav-view>
 
-                <a class="button button-assertive bwidth" href="profile.html" role="button">Sign up</a>
-
-                <p class="text_pad light">or if You already have an account...</p>
-
-                <a class="button button-assertive bwidth" href="profile.html" role="button">Log In</a>
-
-            </div>
-        </div>
-
-    </ion-pane>
-  </body>
+</body>
 </html>
