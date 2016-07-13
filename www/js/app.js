@@ -26,9 +26,9 @@ $urlRouterProvider.otherwise("/");
         url: '/log-in',
         templateUrl: 'views/log-in.html'
     })
+
     .state('tab', {
         url: "/tab",
-        abstract: true,
         templateUrl: "templates/tab.html"
     })
 
@@ -49,15 +49,31 @@ $urlRouterProvider.otherwise("/");
     .state('tab.new-meeting', {
         url: '/new-meeting',
         views: {
-            'tab-new-meeting': {templateUrl: 'templates/tab-new-meeting.html'}
+            'tab-new-meeting': { templateUrl: 'templates/tab-new-meeting.html' }
         }
     })
+
     .state('tab.more', {
         url: '/more',
         views: {
             'tab-more': {templateUrl: 'templates/tab-more.html'}
         }
     })
+
+    .state('tab.location-settings', {
+        url: '/location-settings',
+        views: {
+            'tab-more': { templateUrl: 'templates/more-location-settings.html' }
+        }
+    })
+
+    .state('tab.add-friends', {
+        url: '/add-friends',
+        views: {
+            'tab-more': { templateUrl: 'templates/more-add-friends.html' }
+        }
+    })
+
 
 });
 
