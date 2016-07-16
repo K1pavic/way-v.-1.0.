@@ -1,11 +1,57 @@
-﻿<ion-view hide-back-button="false">
+﻿<ion-view title="" hide-back-button="false">
 
-    <ion-content class="gray padding" scroll="false">
+    <ion-pane class="top">
+        <form name="myForm" validate>
+            <div class="row">
+                <label class="item-input item-stacked-label col col-80">
+                    <input class="login-input" type="text" name="username" ng-model="username" ng-minlength="3" required>
+                    <hr />
+                    <span class="input-label">Username</span>
+                </label>
+                <div class="col">
+                    <i ng-hide="true" class="ion-checkmark-circled ng-hide login-icon"></i>
+                </div>
+            </div>
 
-        <h1>Sign up page!</h1>
+            <div class="row">
+                <label class="item-input item-stacked-label col col-80">
+                    <input class="login-input" type="email" name="email" ng-model="email" ng-minlength="3" required>
+                    <hr />
+                    <span class="input-label">E-mail</span>
+                </label>
+                <div class="col">
+                    <i ng-hide="true" class="ion-checkmark-circled ng-hide login-icon"></i>
+                </div>
+            </div>
 
-        <a class="button button-assertive bwidth" ui-sref="tab.home" role="button">sign-up</a>
+            <div class="row">
+                <label class="item-input item-stacked-label col col-80">
+                    <input class="login-input" type="password" name="password" ng-model="password" ng-minlength="6" required>
+                    <hr />
+                    <span class="input-label">Password</span>
+                </label>
+                <div class="col">
+                    <i ng-hide="" class="ion-checkmark-circled ng-hide login-icon"></i>
+                </div>
+            </div>
 
-    </ion-content>
+            <div class="row">
+                <label class="item-input item-stacked-label col col-80">
+                    <input class="login-input" type="password" name="password-repeat" ng-model="password" ng-minlength="6" required>
+                    <hr />
+                    <span class="input-label">Repeat password</span>
+                </label>
+                <div class="col">
+                    <i ng-hide="" class="ion-checkmark-circled ng-hide login-icon"></i>
+                </div>
+            </div>
+        </form>
+
+        <div class="bar bar-footer bar-assertive footer-button">
+            <a class="button button-full button-clear" ui-sref="tab.home">
+               Sign up
+            </a>
+        </div>
+    </ion-pane>
 
 </ion-view>

@@ -1,11 +1,24 @@
-﻿<ion-view hide-back-button="false">
+﻿<ion-view title="" hide-back-button="false">
 
-    <ion-content class="gray padding" scroll="false">
+	<ion-pane class="top">
+	  <form name="myForm" validate>
+				<label class="item-input item-stacked-label">
+                    <input class="login-input" type="text" name="username" ng-model="username" ng-minlength="5" required>
+                    <hr />
+                    <span class="input-label">Username</span>
+				</label>
+				<label class="item-input item-stacked-label">
+                    <input class="login-input" type="password" name="password" ng-model="password" ng-minlength="6" required>
+                    <hr />
+				    <span class="input-label">Password</span>
+				</label>
+	  </form>
 
-        <h1>Log In page!</h1>
-
-        <a class="button button-assertive bwidth" ui-sref="tab.home" role="button">Log In</a>
-
-    </ion-content>
+        <div class="bar bar-footer bar-assertive footer-button">
+            <a class="button button-full button-clear" ng-disabled="myForm.$invalid" ui-sref="tab.home">
+                Log In
+            </a>
+        </div>
+	</ion-pane>
 
 </ion-view>

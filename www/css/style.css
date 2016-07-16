@@ -11,7 +11,7 @@
 
 .started {
     padding-top: 150px;
-    padding-bottom: 70px;
+    padding-bottom: 60px;
 }
 
 .text_pad {
@@ -22,4 +22,37 @@
 
 .bwidth {
     width: 60%;
+}
+
+div.footer-button a.button-full {
+    width:100%;
+    margin-top: 0
+}
+
+.top {
+    padding-top: 100px;
+}
+
+hr {
+    margin: 0;
+
+}
+
+.login-input {
+    height: 25px !important;
+}
+
+label.item-input.item-stacked-label {
+    padding-right: 16px;
+    padding-left: 9px;
+}
+
+span.input-label {
+    font-style: italic;
+    font-size: 12px;
+}
+
+.login-icon {
+    float: left;
+    padding-top: 7px;
 }
