@@ -1,3 +1,13 @@
+/* global */
+.gray {
+    background-color: #3c3c3c;
+}
+
+.gray-container {
+    background-color: #e7e7e7;
+}
+
+/* get-started */
 .center {
     margin-left: auto;
     margin-right: auto;
@@ -24,13 +34,15 @@
     width: 60%;
 }
 
+/* login-signup */
+
 div.footer-button a.button-full {
     width:100%;
     margin-top: 0
 }
 
 .top {
-    padding-top: 100px;
+    padding-top: 40px;
 }
 
 hr {
@@ -40,12 +52,14 @@ hr {
 
 .login-input {
     height: 25px !important;
+    font-size: 16px !important;
 }
 
 label.item-input.item-stacked-label {
     padding-right: 16px;
     padding-left: 9px;
 }
+
 
 span.input-label {
     font-style: italic;
@@ -55,4 +69,75 @@ span.input-label {
 .login-icon {
     float: left;
     padding-top: 7px;
+}
+
+/* profile */
+.profile {
+    padding: 20px 20px 30px 20px;
+}
+
+.profile-background {
+   background-color: #e7e7e7;
+}
+
+.profile-image {
+    margin-right: 15px;
+}
+
+.user {
+    padding-top: 15px;
+    font-size: 20px;
+    color: white;
+}
+
+.profile-set {
+    color: #838383;
+}
+
+.profile-icon {
+    padding-left: 15px;
+    font-size: 20px;
+}
+
+.profile-content {
+    color: #2e2e2e;
+}
+
+.container div {
+    padding-left: 25px;
+}
+
+.container div h5 {
+    display: inline-block;
+    clear:both;
+    float:left; 
+    padding-left: 10px;
+}
+
+.container p {
+    display: inline-block;
+    clear: both;
+    float: left;
+    background-color: white;
+    margin-bottom: 5px;
+    color: #838383;
+    padding: 0 5px 0 5px;
+}
+
+/* Map */
+
+
+
+/* More */
+
+.item-content {
+    padding-right: 16px !important;
+}
+
+.top-more {
+    padding-top: 60px;
+}
+
+ion-list ion-item {
+    text-align: center;
 }

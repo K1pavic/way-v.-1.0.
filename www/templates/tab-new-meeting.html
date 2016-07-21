@@ -1,5 +1,90 @@
-﻿<ion-view title="Dashboard">
-    <ion-content class="has-header padding">
-        <h1>New-meeting</h1>
+﻿<ion-view title="" hide-back-button="false">
+
+    <ion-content class="top has-header has-footer padding" overflow-scroll=true scroll="true">
+        <form name="myForm" validate>
+            <div class="row">
+                <label class="item-input item-stacked-label col col-80">
+                    <input class="login-input" type="text" name="name" ng-minlength="3" required>
+                    <hr />
+                    <span class="input-label">Name</span>
+                </label>
+                <div class="col">
+                    <i ng-hide="true" class="ion-checkmark-circled ng-hide login-icon"></i>
+                </div>
+            </div>
+
+            <div class="row">
+                <label class="item-input item-stacked-label col col-80">
+                    <input class="login-input" type="text" name="location" required>
+                    <hr />
+                    <span class="input-label">Location</span>
+                </label>
+                <div class="col">
+                    <i ng-hide="true" class="ion-checkmark-circled ng-hide login-icon"></i>
+                </div>
+            </div>
+
+            <div class="row">
+                <label class="item-input item-stacked-label col col-80">
+                    <input class="login-input" type="date" name="date" required>
+                    <hr />
+                    <span class="input-label">Date</span>
+                </label>
+                <div class="col">
+                    <i ng-hide="" class="ion-checkmark-circled ng-hide login-icon"></i>
+                </div>
+            </div>
+
+            <div class="row">
+                <label class="item-input item-stacked-label col col-80">
+                    <input class="login-input" type="time" name="start-time" required>
+                    <hr />
+                    <span class="input-label">Starting time</span>
+                </label>
+                <div class="col">
+                    <i ng-hide="" class="ion-checkmark-circled ng-hide login-icon"></i>
+                </div>
+            </div>
+
+            <div class="row">
+                <label class="item-input item-stacked-label col col-80">
+                    <input class="login-input" type="time" name="alert-time" required>
+                    <hr />
+                    <span class="input-label">Alert</span>
+                </label>
+                <div class="col">
+                    <i ng-hide="" class="ion-checkmark-circled ng-hide login-icon"></i>
+                </div>
+            </div>
+
+            <div class="row">
+                <label class="item-input item-stacked-label col col-80">
+                    <input class="login-input" type="time" name="ending-time" required>
+                    <hr />
+                    <span class="input-label">Ending time</span>
+                </label>
+                <div class="col">
+                    <i ng-hide="" class="ion-checkmark-circled ng-hide login-icon"></i>
+                </div>
+            </div>
+
+            <div class="row">
+                <label class="item-input item-stacked-label col col-80">
+                    <input class="login-input" type="search" name="friends" required>
+                    <hr />
+                    <span class="input-label">Friends</span>
+                </label>
+                <div class="col">
+                    <i ng-hide="" class="ion-checkmark-circled ng-hide login-icon"></i>
+                </div>
+            </div>
+        </form>
     </ion-content>
+
+        <div class="bar bar-footer bar-assertive footer-button hide-on-keyboard-open">
+            <a class="button button-full button-clear" ng-disabled="myForm.$invalid" ui-sref="tab.home">
+                Create meeting
+            </a>
+        </div>
+
 </ion-view>

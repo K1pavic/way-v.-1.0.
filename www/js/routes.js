@@ -24,6 +24,7 @@
     // Each tab has its own nav history stack:
 
     .state('tab.home', {
+        cache: false,
         url: '/home',
         views: {
             'tab-home': { templateUrl: 'templates/tab-home.html' }

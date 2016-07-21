@@ -1,6 +1,6 @@
 ﻿<ion-view title="" hide-back-button="false">
 
-    <ion-pane class="top">
+    <ion-content class="top has-header padding" overflow-scroll=true scroll="true">
         <form name="myForm" validate>
             <div class="row">
                 <label class="item-input item-stacked-label col col-80">
@@ -37,7 +37,7 @@
 
             <div class="row">
                 <label class="item-input item-stacked-label col col-80">
-                    <input class="login-input" type="password" name="password-repeat" ng-model="password" ng-minlength="6" required>
+                    <input class="login-input" type="password" name="password-repeat" ng-minlength="6" required>
                     <hr />
                     <span class="input-label">Repeat password</span>
                 </label>
@@ -46,12 +46,12 @@
                 </div>
             </div>
         </form>
+    </ion-content>
 
-        <div class="bar bar-footer bar-assertive footer-button">
-            <a class="button button-full button-clear" ui-sref="tab.home">
-               Sign up
-            </a>
-        </div>
-    </ion-pane>
+    <div class="bar bar-footer bar-assertive footer-button hide-on-keyboard-open">
+        <a class="button button-full button-clear" ng-disabled="myForm.$invalid" ui-sref="tab.home">
+            Sign up
+        </a>
+    </div>
 
 </ion-view>

@@ -5,18 +5,6 @@
 // the 2nd parameter is an array of 'requires'
 var myApp = angular.module('myApp', ['ionic']);
 
-myApp.directive('hideTabs', function($rootScope) {
-    return {
-        restrict: 'A',
-        link: function($scope, $el) {
-            $rootScope.hideTabs = 'tabs-item-hide';
-            $scope.$on('$destroy', function() {
-                $rootScope.hideTabs = '';
-            });
-        }
-    };
-});
-
 myApp.run(function ($ionicPlatform) {
     $ionicPlatform.ready(function () {
         if (window.cordova && window.cordova.plugins.Keyboard) {
