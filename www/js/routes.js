@@ -43,6 +43,13 @@
         }
     })
 
+    .state('tab.new-meeting-created', {
+        url: '/created-meeting',
+        views: {
+            'tab-new-meeting': { templateUrl: 'templates/new-meeting-created.html' }
+        }
+    })
+
     .state('tab.more', {
         url: '/more',
         views: {
@@ -58,7 +65,6 @@
     })
 
     .state('tab.add-friends', {
-        cache: false,
         url: '/add-friends',
         views: {
             'tab-more': { templateUrl: 'templates/more-add-friends.html' }

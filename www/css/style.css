@@ -1,6 +1,6 @@
 /* global */
 .gray {
-    background-color: #3c3c3c;
+    background-color: #3f3f3f;
 }
 
 .gray-container {
@@ -13,10 +13,6 @@
     margin-right: auto;
     display: block;
     text-align: center;
-}
-
-.gray {
-    background-color: #3c3c3c;
 }
 
 .started {
@@ -35,11 +31,6 @@
 }
 
 /* login-signup */
-
-div.footer-button a.button-full {
-    width:100%;
-    margin-top: 0
-}
 
 .top {
     padding-top: 40px;
@@ -64,6 +55,7 @@ label.item-input.item-stacked-label {
 span.input-label {
     font-style: italic;
     font-size: 12px;
+    width: 90%;
 }
 
 .login-icon {
@@ -73,7 +65,7 @@ span.input-label {
 
 /* profile */
 .profile {
-    padding: 20px 20px 30px 20px;
+    padding: 20px;
 }
 
 .profile-background {
@@ -99,10 +91,6 @@ span.input-label {
     font-size: 20px;
 }
 
-.profile-content {
-    color: #2e2e2e;
-}
-
 .container div {
     padding-left: 25px;
 }
@@ -112,6 +100,7 @@ span.input-label {
     clear:both;
     float:left; 
     padding-left: 10px;
+    color: #2e2e2e;
 }
 
 .container p {
@@ -140,4 +129,30 @@ span.input-label {
 
 ion-list ion-item {
     text-align: center;
+}
+
+/*New meeting*/
+
+.meeting-labels {
+    color: #838383;
+}
+
+.meeting-padding {
+    padding: 20px;
+}
+
+.meeting-data {
+    color: #e7e7e7;
+}
+
+.meeting-friends ion-list ion-item {
+    background-color: #e7e7e7;
+    font-size: 12px;
+    padding: 2px 5px 2px 10px;
+    text-align: left;
+}
+
+.friend-status {
+    float: right;
+    padding-right: 3px;
 }
