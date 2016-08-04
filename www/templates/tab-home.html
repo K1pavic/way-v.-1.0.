@@ -1,13 +1,13 @@
 ﻿<ion-view title="">
     
-    <ion-content class="has-header profile-background">
+    <ion-content class="has-header profile-background" ng-controller="ProfileCtrl">
         <div class="row gray profile">
             <div class="col col-40 profile-image">
                 <img ng-src="img/profile.png" height="100" widht="100" />
             </div>
             <div class="col col-60">
 
-                <p class="user">Username</p>
+                <p class="user">{{ data.username }}</p>
 
                 <p class="profile-set">GPS<a ng-click="" class="icon ion-ios-navigate profile-icon assertive"></a></p>
 

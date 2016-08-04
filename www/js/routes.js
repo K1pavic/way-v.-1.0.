@@ -1,4 +1,4 @@
-﻿myApp.config(function ($stateProvider, $urlRouterProvider) {
+﻿myApp.config(function ($ionicConfigProvider, $stateProvider, $urlRouterProvider) {
 
     $urlRouterProvider.otherwise("/");
 

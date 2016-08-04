@@ -2,7 +2,7 @@
 <widget id="com.ionicframework.way703894" version="0.0.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
   <name>WAY</name>
   <description>
-        An Ionic Framework and Cordova project.
+        An Ionic and Cordova project.
     </description>
   <author email="k1pavic@gmail.com" href="http://example.com.com/">Kristian Pavic</author>
   <content src="index.html" />
@@ -73,4 +73,5 @@
   <icon src="resources\android\icon\drawable-xhdpi-icon.png" />
   <preference name="WindowsStoreDisplayName" value="WAY" />
   <plugin name="ionic-plugin-keyboard" spec="~2.2.1" />
+  <plugin name="cordova-plugin-inappbrowser" version="1.4.0" />
 </widget>

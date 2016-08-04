@@ -13,6 +13,8 @@
     -->
     <!-- ionic/angularjs js -->
     <script src="lib/ionic/js/ionic.bundle.js"></script>
+    <script src="lib/ionic-platform-web-client/dist/ionic.io.bundle.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.3/angular-messages.js"></script>
 
     <!-- cordova script (this will be a 404 during development) -->
     <script src="cordova.js"></script>
@@ -22,8 +24,9 @@
     <script src="js/routes.js"></script>
     <script src="js/controllers.js"></script>
     <script src="js/directives.js"></script>
+    <script src="js/services.js"></script>
 </head>
-<body class="platform-ios platform-android platform-windowsphone platform-browser" ng-app="myApp">
+<body ng-app="myApp" ng-controller="MainController">
 
         <ion-nav-bar class="bar-assertive">
             <ion-nav-back-button class="button-clear">

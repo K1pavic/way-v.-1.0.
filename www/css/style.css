@@ -7,6 +7,25 @@
     background-color: #e7e7e7;
 }
 
+.error-mg {
+    color: indianred;
+    opacity: 0.6;
+}
+
+.hasErrors {
+    height: 3px;
+    color: azure;
+    background-color: red;
+    border: red;
+}
+
+.noErrors {
+    height: 3px;
+    color: springgreen;
+    background-color: springgreen;
+    border: none;
+}
+
 /* get-started */
 .center {
     margin-left: auto;
@@ -38,7 +57,10 @@
 
 hr {
     margin: 0;
+}
 
+.underline {
+    border-bottom-width: 3px;
 }
 
 .login-input {
@@ -51,16 +73,10 @@ label.item-input.item-stacked-label {
     padding-left: 9px;
 }
 
-
 span.input-label {
     font-style: italic;
     font-size: 12px;
     width: 90%;
-}
-
-.login-icon {
-    float: left;
-    padding-top: 7px;
 }
 
 /* profile */

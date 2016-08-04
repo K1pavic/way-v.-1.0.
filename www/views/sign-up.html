@@ -1,56 +1,47 @@
 ﻿<ion-view title="Sign up" hide-back-button="false">
 
-    <ion-content class="top has-header padding" overflow-scroll="true" scroll="true">
-        <form name="myForm" validate>
+    <!--ng-class="{ 'hasErrors': !resultError, 'noErrors': resultError  }"-->
+
+    <ion-content class="top has-header padding" overflow-scroll="true" scroll="true" ng-controller="SignupCtrl">
+        <form name="signupForm" novalidate="">
+            <span class="error-mg" ng-hide="">*Error</span>
             <div class="row">
-                <label class="item-input item-stacked-label col col-90">
-                    <input class="login-input" type="text" name="username" ng-model="username" ng-minlength="3" required>
-                    <hr />
+                <label class="item-input item-stacked-label col">
+                    <input class="login-input" type="text" name="username" ng-model="data.username" ng-minlength="3" required>
+                    <hr/>
                     <span class="input-label">Username</span>
                 </label>
-                <div class="col">
-                    <i ng-hide="false" class="ion-checkmark-circled login-icon"></i>
-                </div>
             </div>
 
             <div class="row">
-                <label class="item-input item-stacked-label col col-90">
-                    <input class="login-input" type="email" name="email" ng-model="email" ng-minlength="3" required>
+                <label class="item-input item-stacked-label col">
+                    <input class="login-input" type="email" name="email" ng-model="data.email" ng-minlength="3" required>
                     <hr />
                     <span class="input-label">E-mail</span>
                 </label>
-                <div class="col">
-                    <i ng-hide="false" class="ion-checkmark-circled login-icon"></i>
-                </div>
             </div>
 
             <div class="row">
-                <label class="item-input item-stacked-label col col-90">
-                    <input class="login-input" type="password" name="password" ng-model="password" ng-minlength="6" required>
+                <label class="item-input item-stacked-label col">
+                    <input class="login-input" type="password" name="password" ng-model="data.password" ng-minlength="4" required>
                     <hr />
                     <span class="input-label">Password</span>
                 </label>
-                <div class="col">
-                    <i ng-hide="false" class="ion-checkmark-circled login-icon"></i>
-                </div>
             </div>
 
             <div class="row">
-                <label class="item-input item-stacked-label col col-90">
-                    <input class="login-input" type="password" name="password-repeat" ng-minlength="6" required>
+                <label class="item-input item-stacked-label col">
+                    <input class="login-input" type="password" name="password-repeat" ng-minlength="4" required>
                     <hr />
                     <span class="input-label">Repeat password</span>
                 </label>
-                <div class="col">
-                    <i ng-hide="false" class="ion-checkmark-circled login-icon"></i>
-                </div>
             </div>
         </form>
 
         <br />
 
         <div>
-            <button class="button button-block button-assertive" ng-disabled="myForm.$invalid" ui-sref="tab.home">
+            <button class="button button-block button-assertive" ng-disabled="signupForm.$invalid" ng-click="customRegistration()">
                 Sign up
             </button>
         </div>

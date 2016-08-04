@@ -1,28 +1,28 @@
 ﻿<ion-view title="New meeting" hide-back-button="false">
-    <ion-content class="top has-header padding" overflow-scroll="true" scroll="true">
+    <ion-content class="top has-header padding" overflow-scroll="true" scroll="true" ng-controller="MeetingCtrl">
 
         <form name="myForm" validate>
 
                 <label class="item-input item-stacked-label col">
-                    <input class="login-input" type="text" name="name" ng-minlength="3" required>
+                    <input class="login-input" type="text" name="name" ng-model="data.Mname" ng-minlength="3" required>
                     <hr />
                     <span class="input-label">Name</span>
                 </label>
 
                 <label class="item-input item-stacked-label col">
-                    <input class="login-input" type="text" name="location" required>
+                    <input class="login-input" type="text" name="location" ng-model="data.Mlocation" required>
                     <hr />
                     <span class="input-label">Location</span>
                 </label>
 
                 <label class="item-input item-stacked-label col">
-                    <input class="login-input" type="date" name="date" required>
+                    <input class="login-input" type="date" name="date" ng-model="data.Mdate" required>
                     <hr />
                     <span class="input-label">Date</span>
                 </label>
 
                 <label class="item-input item-stacked-label col">
-                    <input class="login-input" type="time" name="start-time" required>
+                    <input class="login-input" type="time" name="start-time" ng-model="data.MStime" required>
                     <hr />
                     <span class="input-label">Starting time</span>
                 </label>
@@ -34,7 +34,7 @@
                 </label>
 
                 <label class="item-input item-stacked-label col">
-                    <input class="login-input" type="time" name="ending-time" required>
+                    <input class="login-input" type="time" name="ending-time" ng-model="data.MEtime" required>
                     <hr />
                     <span class="input-label">Ending time</span>
                 </label>
