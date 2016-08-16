@@ -1,16 +1,16 @@
 ﻿<ion-view title="Log In" hide-back-button="false">
-    <ion-content class="top has-header padding" overflow-scroll="true" scroll="true" ng-controller="LoginCtrl">
+    <ion-content class="top has-header padding" overflow-scroll="true" scroll="true">
 
 	  <form name="loginForm" validate>
                 <span class="padding error-mg" ng-hide=false>Wrong credentials, please try again!</span>
 
 				<label class="item-input item-stacked-label">
-                    <input class="login-input" type="text" name="username" ng-model="data.username" ng-minlength="4" required>
+                    <input class="login-input" type="email" name="email" ng-model="user.email" ng-minlength="4" required>
                     <hr />
-                    <span class="input-label">Username</span>
+                    <span class="input-label">Email</span>
 				</label>
 				<label class="item-input item-stacked-label">
-                    <input class="login-input" type="password" name="password" ng-model="data.password" ng-minlength="4" required>
+                    <input class="login-input" type="password" name="password" ng-model="user.password" ng-minlength="4" required>
                     <hr />
 				    <span class="input-label">Password</span>
 				</label>
@@ -19,7 +19,7 @@
         <br />
 
         <div>
-            <button class="button button-block button-assertive" ng-disabled="loginForm.$invalid" ui-sref="tab.home">
+            <button class="button button-block button-assertive" ng-disabled="loginForm.$invalid" ng-click="login(user)">
                 Log In
             </button>
         </div>

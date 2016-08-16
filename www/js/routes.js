@@ -7,16 +7,21 @@
           url: '/',
           templateUrl: 'views/get-started.html'
       })
+
     .state('sign-up', {
         url: '/sign-up',
-        templateUrl: 'views/sign-up.html'
+        templateUrl: 'views/sign-up.html',
+        controller: 'SignupCtrl'
     })
+
     .state('log-in', {
         url: '/log-in',
-        templateUrl: 'views/log-in.html'
+        templateUrl: 'views/log-in.html',
+        controller: 'LoginCtrl'
     })
 
     .state('tab', {
+        cache: false,
         url: "/tab",
         templateUrl: "templates/tab.html"
     })
@@ -24,18 +29,25 @@
     // Each tab has its own nav history stack:
 
     .state('tab.home', {
-        cache: false,
         url: '/home',
         views: {
-            'tab-home': { templateUrl: 'templates/tab-home.html' }
+            'tab-home': {
+                templateUrl: 'templates/tab-home.html',
+                controller: 'ProfileCtrl'
+            }
         }
     })
+
     .state('tab.map', {
         url: '/map',
         views: {
-            'tab-map': { templateUrl: 'templates/tab-map.html' }
+            'tab-map': {
+                templateUrl: 'templates/tab-map.html',
+                controller: 'MapCtrl'
+            }
         }
     })
+
     .state('tab.new-meeting', {
         url: '/new-meeting',
         views: {
@@ -53,14 +65,20 @@
     .state('tab.more', {
         url: '/more',
         views: {
-            'tab-more': { templateUrl: 'templates/tab-more.html' }
+            'tab-more': {
+                templateUrl: 'templates/tab-more.html',
+                controller: 'MoreCtrl'
+            }
         }
     })
 
     .state('tab.location-settings', {
         url: '/location-settings',
         views: {
-            'tab-more': { templateUrl: 'templates/more-location-settings.html' }
+            'tab-more': {
+                templateUrl: 'templates/more-location-settings.html',
+                controller: 'LocationSettingsCtrl'
+            }
         }
     })
 
@@ -70,6 +88,5 @@
             'tab-more': { templateUrl: 'templates/more-add-friends.html' }
         }
     })
-
 
 });
