@@ -85,7 +85,10 @@
     .state('tab.add-friends', {
         url: '/add-friends',
         views: {
-            'tab-more': { templateUrl: 'templates/more-add-friends.html' }
+            'tab-more': {
+                templateUrl: 'templates/more-add-friends.html',
+                controller: 'AddFriends'
+            }
         }
     })
 

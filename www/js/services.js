@@ -1,4 +1,4 @@
-﻿myApp.service('AuthService', function ($q) {
+﻿myApp.service('AuthService', ['$q', '$http', function($q, $http) {
 
     this.doLogin = function(user) {
         var deferred = $q.defer(),
@@ -18,7 +18,7 @@
         return deferred.promise;
     };
 
-    this.doSignup = function (user) {
+    this.doSignup = function(user) {
         var deferred = $q.defer(),
             authService = this;
 
@@ -41,15 +41,38 @@
         return deferred.promise;
     };
 
-    this.doLogout = function () {
+    this.doLogout = function() {
         Ionic.Auth.logout();
         console.log("Logged out!");
     };
 
-    this.currentUser = function () {
+    this.currentUser = function() {
 
         data = Ionic.User.current();
-
+        
     };
 
-});
+    this.setData = function() {
+        data.set('locationSharing', false);
+        data.set('friends', ['Bob', false]);
+        data.set('position', [0,0]);
+        data.save();
+        console.log(data);
+    };
+
+    this.getAll = function() {
+        return $http({
+                method: 'GET',
+                url: ' https://api.ionic.io/users',
+                headers: {
+                    'Authorization': 'Bearer ' + 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJhOTUxMzQ4Yi1hNmNhLTQ0OTctYjllMC1jMDk0ZmY3OTUxMjUifQ.lUsX1ByZ4v5A2RChYEBHZLAc10lteKUyS-Kd2XTgTzY'
+                },
+            })
+            .then(function successCallback(response) {
+                return response;
+            }, function errorCallback(error) {
+                console.log("Somehting went wrong!")
+                console.log(error);
+            });
+        };
+}]);

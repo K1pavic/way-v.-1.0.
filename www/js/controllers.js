@@ -34,11 +34,8 @@ myApp.controller('SignupCtrl', ['$scope', '$state', '$ionicLoading', 'AuthServic
         AuthService.doSignup(user)
         .then(function (user) {
             // success
-            var data = Ionic.User.current();
-            $scope.data = data.custom;
-            data.set('locationSharing', false);
-            data.set('friends', ['Bob']);
-            data.save();
+            AuthService.currentUser();
+            AuthService.setData();
             $state.go('tab.home');
             $ionicLoading.hide();
         }, function (err) {
@@ -49,37 +46,117 @@ myApp.controller('SignupCtrl', ['$scope', '$state', '$ionicLoading', 'AuthServic
     };
 }]);
 
-myApp.controller('ProfileCtrl', ['$scope', 'AuthService', function ($scope, AuthService) {
+myApp.controller('ProfileCtrl', ['$scope', '$http', 'AuthService', function ($scope, $http, AuthService) {
 
     AuthService.currentUser();
     $scope.data = data.details;
-    
+
 }]);
 
-myApp.controller('MapCtrl', ['$scope', 'AuthService', function ($scope, AuthService) {
+myApp.controller('MapCtrl', ['$scope', '$http', '$ionicLoading', 'AuthService', function ($scope, $http, $ionicLoading, AuthService) {
 
     AuthService.currentUser();
+    $scope.data = data.data.data;
 
-}]);
+    var Latitude = undefined;
+    var Longitude = undefined;
 
-myApp.controller('MeetingCtrl', ['$scope', 'AuthService', function ($scope, AuthService) {
+    // Get geo coordinates
 
+    function initMap() {
 
-}]);
+        $ionicLoading.show({
+            template: 'Signing up ...'
+        });
 
-myApp.controller('NewMeetingCtrl', ['$scope', function ($scope) {
+        navigator.geolocation.getCurrentPosition
+        (onMapSuccess, onMapError, { enableHighAccuracy: true });
+    }
 
+    // Success callback for get geo coordinates
 
+    var onMapSuccess = function (position) {
+
+        Latitude = position.coords.latitude;
+        Longitude = position.coords.longitude;
+
+        $ionicLoading.hide();
+        getMap(Latitude, Longitude);
+
+    }
+
+    // Get map by using coordinates
+
+    function getMap(latitude, longitude) {
+
+        var mapOptions = {
+            center: new google.maps.LatLng(0, 0),
+            zoom: 1,
+            mapTypeId: google.maps.MapTypeId.ROADMAP
+        };
+
+        map = new google.maps.Map
+        (document.getElementById("map"), mapOptions);
+
+        $scope.data.position[0] = latitude;
+        $scope.data.position[1] = longitude;
+        data.save();
+
+        console.log($scope.data.position);
+
+        var latLong = new google.maps.LatLng(latitude, longitude);
+
+        var marker = new google.maps.Marker({
+            position: latLong
+        });
+
+        marker.setMap(map);
+        map.setZoom(15);
+        map.setCenter(marker.getPosition());
+
+    }
+
+    // Success callback for watching your changing position
+
+    var onMapWatchSuccess = function (position) {
+
+        var updatedLatitude = position.coords.latitude;
+        var updatedLongitude = position.coords.longitude;
+
+        if (updatedLatitude != Latitude && updatedLongitude != Longitude) {
+
+            Latitude = updatedLatitude;
+            Longitude = updatedLongitude;
+
+            getMap(updatedLatitude, updatedLongitude);
+        }
+    }
+
+    // Error callback
+
+    function onMapError(error) {
+        console.log('code: ' + error.code + '\n' +
+            'message: ' + error.message + '\n');
+    }
+
+    // Watch your changing position
+
+    function watchMapPosition() {
+
+        return navigator.geolocation.watchPosition
+        (onMapWatchSuccess, onMapError, { enableHighAccuracy: true });
+    }
+
+    ionic.Platform.ready(function () {
+        initMap();
+    });
 
 }]);
 
 myApp.controller('MoreCtrl', ['$scope', '$state', 'AuthService', function ($scope, $state, AuthService) {
 
-    $scope.current_user = Ionic.User.current();
-
     $scope.logout = function () {
         AuthService.doLogout();
-
         $state.go('get-started');
     }
 
@@ -96,3 +173,24 @@ myApp.controller('LocationSettingsCtrl', ['$scope', 'AuthService', function ($sc
     };
 
 }]);
+
+myApp.controller('AddFriends', ['$scope', 'AuthService', function ($scope, AuthService) {
+
+    AuthService.getAll()
+    .then(function success(users) {
+        $scope.users = users;
+        var all = $scope.users.data.data;
+        var test = JSON.stringify(all);
+        console.log(test);
+    }, function error() {
+        console.log("Something went wrong!");
+    });
+
+
+  /*  $scope.toggleChange = function () {
+        $scope.data.locationSharing;
+        data.save();
+    };*/
+
+}]);
+
