@@ -2,7 +2,6 @@
     <ion-content has-header="true" class="gray-container">
 
         <ion-list>
-
             <br />
             <br />
             <br />
@@ -10,20 +9,19 @@
 
             <label class="item item-input">
                 <i class="icon ion-search placeholder-icon"></i>
-                <input type="text" placeholder="Search">
+                <input type="text" ng-model="friend" placeholder="Enter a friends username...">
             </label>
 
-                    <ion-checkbox>Pero</ion-checkbox>
-                    <ion-checkbox>Perovic</ion-checkbox>
-                    <ion-checkbox>Pero Pero</ion-checkbox>  
-
+            <!--<ion-checkbox>Pero</ion-checkbox>
+            <ion-checkbox>Perovic</ion-checkbox>
+            <ion-checkbox>Pero Pero</ion-checkbox>-->  
         </ion-list>
 
         <br />
 
         <div class="padding">
-            <button class="button button-block button-assertive gray-container">
-            Add Selected
+            <button class="button button-block button-assertive gray-container" ng-click="addFriend(friend)">
+            Add Friend
             </button>
         </div>
 

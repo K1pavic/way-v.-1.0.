@@ -52,12 +52,13 @@
         
     };
 
-    this.setData = function() {
+    this.setData = function () {
+
+        var listOffriends = {};
         data.set('locationSharing', false);
-        data.set('friends', ['Bob', false]);
+        data.set('friends', listOffriends);
         data.set('position', [0,0]);
         data.save();
-        console.log(data);
     };
 
     this.getAll = function() {
@@ -74,5 +75,37 @@
                 console.log("Somehting went wrong!")
                 console.log(error);
             });
+    };
+
+    this.setNewFriend = function (newFriend) {
+
+        // Add new friend to current users data
+        var friendList = data.data.data.friends;
+        friendList[newFriend.details.username] = [newFriend.uuid, newFriend.custom.position];
+        data.set('friends', friendList);
+        console.log('User ' + data.details.username + 's id is ' + data.id);
+        data.save();
+
+        // Add current user to distant user friend list
+        var addFriendList = newFriend.custom.friends;
+        addFriendList[data.details.username] = [data.id, data.data.data.position];
+        var addCustom = newFriend.custom;
+
+        return $http({
+                method: 'PUT',
+                url: "https://api.ionic.io/users/"+newFriend.uuid+"/custom",
+                data: addCustom,
+                headers: {
+                    'Authorization': 'Bearer ' + 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJhOTUxMzQ4Yi1hNmNhLTQ0OTctYjllMC1jMDk0ZmY3OTUxMjUifQ.lUsX1ByZ4v5A2RChYEBHZLAc10lteKUyS-Kd2XTgTzY'
+                },
+            })
+                .then(function successCallback(response) {
+                    console.log(response);
+                    console.log("Updated!");
+                }, function errorCallback(error) {
+                    console.log("Somehting went wrong!")
+                    console.log(error);
+                });
         };
+
 }]);

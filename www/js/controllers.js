@@ -53,7 +53,7 @@ myApp.controller('ProfileCtrl', ['$scope', '$http', 'AuthService', function ($sc
 
 }]);
 
-myApp.controller('MapCtrl', ['$scope', '$http', '$ionicLoading', 'AuthService', function ($scope, $http, $ionicLoading, AuthService) {
+myApp.controller('MapCtrl', ['$scope', '$ionicLoading', 'AuthService', function ($scope, $ionicLoading, AuthService) {
 
     AuthService.currentUser();
     $scope.data = data.data.data;
@@ -66,7 +66,7 @@ myApp.controller('MapCtrl', ['$scope', '$http', '$ionicLoading', 'AuthService', 
     function initMap() {
 
         $ionicLoading.show({
-            template: 'Signing up ...'
+            template: 'Loading data ...'
         });
 
         navigator.geolocation.getCurrentPosition
@@ -176,21 +176,25 @@ myApp.controller('LocationSettingsCtrl', ['$scope', 'AuthService', function ($sc
 
 myApp.controller('AddFriends', ['$scope', 'AuthService', function ($scope, AuthService) {
 
-    AuthService.getAll()
-    .then(function success(users) {
-        $scope.users = users;
-        var all = $scope.users.data.data;
-        var test = JSON.stringify(all);
-        console.log(test);
-    }, function error() {
-        console.log("Something went wrong!");
-    });
+    $scope.addFriend = function(friend) {
+        $scope.friend = friend;
 
-
-  /*  $scope.toggleChange = function () {
-        $scope.data.locationSharing;
-        data.save();
-    };*/
+        AuthService.getAll()
+        .then(function success(users) {
+            $scope.users = users;
+            var all = $scope.users.data.data;
+            var i;
+            for (i = 0; i < all.length; i++) {
+                if (all[i].details.username === $scope.friend) {
+                    var newFriend = all[i];
+                    AuthService.currentUser();
+                    AuthService.setNewFriend(newFriend);
+                };
+            };
+        }, function error() {
+            console.log("Something went wrong!");
+        });
+    };
 
 }]);
 
