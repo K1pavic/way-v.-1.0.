@@ -60,6 +60,8 @@ myApp.controller('MapCtrl', ['$scope', '$ionicLoading', 'AuthService', function 
 
     var Latitude = undefined;
     var Longitude = undefined;
+    var options = { enableHighAccuracy: true }; // If not true, app is not working on mobile devices
+    var marker;
 
     // Get geo coordinates
 
@@ -69,8 +71,10 @@ myApp.controller('MapCtrl', ['$scope', '$ionicLoading', 'AuthService', function 
             template: 'Loading data ...'
         });
 
+        // Known bug requires 2 calls, so the second can work properly ...
+        navigator.geolocation.getCurrentPosition(function () { }, function () { }, {});
         navigator.geolocation.getCurrentPosition
-        (onMapSuccess, onMapError, { enableHighAccuracy: true });
+        (onMapSuccess, onMapError, options);
     }
 
     // Success callback for get geo coordinates
@@ -98,15 +102,10 @@ myApp.controller('MapCtrl', ['$scope', '$ionicLoading', 'AuthService', function 
         map = new google.maps.Map
         (document.getElementById("map"), mapOptions);
 
-        $scope.data.position[0] = latitude;
-        $scope.data.position[1] = longitude;
-        data.save();
-
-        console.log($scope.data.position);
+        AuthService.updateCurrent(latitude, longitude); // Updates current user location in database
 
         var latLong = new google.maps.LatLng(latitude, longitude);
-
-        var marker = new google.maps.Marker({
+        marker = new google.maps.Marker({
             position: latLong
         });
 
@@ -114,21 +113,54 @@ myApp.controller('MapCtrl', ['$scope', '$ionicLoading', 'AuthService', function 
         map.setZoom(15);
         map.setCenter(marker.getPosition());
 
+        // Adding friends markers to map
+
+        var friendsData = $scope.data.friends;
+
+        for (var friendsName in friendsData) {
+            console.log((friendsName, friendsData[friendsName])[1]);
+
+            var latID = (friendsName, friendsData[friendsName])[1][0];
+            var longID = (friendsName, friendsData[friendsName])[1][1];
+
+            var latiLongi = new google.maps.LatLng(latID, longID);
+
+            var friendMarker = new google.maps.Marker({
+                position: latiLongi
+            });
+
+            friendMarker.setMap(map);
+            
+        }
     }
+
+    // Update current user's marker
+
+    var updateMarker = function(updateLat, updateLong) {
+
+        var updatedlatLong = new google.maps.LatLng(updateLat, updateLong);
+        marker.setPosition(updatedlatLong);
+        console.log("Position updated!");
+
+    };
 
     // Success callback for watching your changing position
 
-    var onMapWatchSuccess = function (position) {
+    var Updatesuccess = function (position) {
 
         var updatedLatitude = position.coords.latitude;
         var updatedLongitude = position.coords.longitude;
 
-        if (updatedLatitude != Latitude && updatedLongitude != Longitude) {
+        console.log(updatedLatitude);
+        console.log(updatedLongitude);
 
+        if (updatedLatitude != Latitude || updatedLongitude != Longitude) {
+
+            AuthService.updateCurrent(updatedLatitude, updatedLongitude); // Updates current user location in database
             Latitude = updatedLatitude;
             Longitude = updatedLongitude;
+            updateMarker(updatedLatitude, updatedLongitude);
 
-            getMap(updatedLatitude, updatedLongitude);
         }
     }
 
@@ -139,13 +171,13 @@ myApp.controller('MapCtrl', ['$scope', '$ionicLoading', 'AuthService', function 
             'message: ' + error.message + '\n');
     }
 
-    // Watch your changing position
+    // Watching for current user's position changes
 
-    function watchMapPosition() {
+    var id;
 
-        return navigator.geolocation.watchPosition
-        (onMapWatchSuccess, onMapError, { enableHighAccuracy: true });
-    }
+    id = navigator.geolocation.watchPosition(Updatesuccess, onMapError, options);
+
+    // Initialize map when device is ready
 
     ionic.Platform.ready(function () {
         initMap();
