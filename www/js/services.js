@@ -126,42 +126,45 @@
         for (var friendName in friends) {
             console.log("Hello " + friendName);
             var friendID = (friendName, friends[friendName])[0];
-            console.log(friendID);
+            this.syncData(friendID);
+        };
+    };
 
+    this.syncData = function (friendID) {
 
-            $http({
-                method: 'GET',
-                url: "https://api.ionic.io/users/" + friendID + "/custom",
-                headers: {
-                    'Authorization': 'Bearer ' + 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJhOTUxMzQ4Yi1hNmNhLTQ0OTctYjllMC1jMDk0ZmY3OTUxMjUifQ.lUsX1ByZ4v5A2RChYEBHZLAc10lteKUyS-Kd2XTgTzY'
-                },
-            })
+        $http({
+            method: 'GET',
+            url: "https://api.ionic.io/users/" + friendID + "/custom",
+            headers: {
+                'Authorization': 'Bearer ' + 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJhOTUxMzQ4Yi1hNmNhLTQ0OTctYjllMC1jMDk0ZmY3OTUxMjUifQ.lUsX1ByZ4v5A2RChYEBHZLAc10lteKUyS-Kd2XTgTzY'
+            },
+        })
+            .then(function successCallback(response) {
+                var currentPos = data.data.data.position;
+                console.log("Getting friends data..." + friendID);
+                response.data.data.friends[data.details.username][1] = currentPos;
+                var updatePos = response.data.data;
+
+                $http({
+                    method: 'PUT',
+                    url: "https://api.ionic.io/users/" + friendID + "/custom",
+                    data: updatePos,
+                    headers: {
+                        'Authorization': 'Bearer ' + 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJhOTUxMzQ4Yi1hNmNhLTQ0OTctYjllMC1jMDk0ZmY3OTUxMjUifQ.lUsX1ByZ4v5A2RChYEBHZLAc10lteKUyS-Kd2XTgTzY'
+                    },
+                })
                 .then(function successCallback(response) {
-                    var currentPos = data.data.data.position;
-                    console.log("Getting friends data..." + friendName);
-                    response.data.data.friends[data.details.username][1] = currentPos;
-                    var updatePos = response.data.data;
-
-                    $http({
-                        method: 'PUT',
-                        url: "https://api.ionic.io/users/" + friendID + "/custom",
-                        data: updatePos,
-                        headers: {
-                            'Authorization': 'Bearer ' + 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJhOTUxMzQ4Yi1hNmNhLTQ0OTctYjllMC1jMDk0ZmY3OTUxMjUifQ.lUsX1ByZ4v5A2RChYEBHZLAc10lteKUyS-Kd2XTgTzY'
-                        },
-                    })
-                    .then(function successCallback(response) {
-                        console.log("Updated!");
-                    }, function errorCallback(error) {
-                        console.log("Somehting went wrong!")
-                        console.log(error);
-                    });
-
+                    console.log("Updated! " + friendID);
                 }, function errorCallback(error) {
                     console.log("Somehting went wrong!")
                     console.log(error);
                 });
-        };
+
+            }, function errorCallback(error) {
+                console.log("Somehting went wrong!")
+                console.log(error);
+            });
+
     };
 
 }]);
