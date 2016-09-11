@@ -53,15 +53,20 @@ myApp.controller('ProfileCtrl', ['$scope', '$http', 'AuthService', function ($sc
 
 }]);
 
-myApp.controller('MapCtrl', ['$scope', '$ionicLoading', 'AuthService', function ($scope, $ionicLoading, AuthService) {
+myApp.controller('MapCtrl', ['$scope', '$ionicLoading', '$ionicGesture', 'AuthService', function ($scope, $ionicLoading, $ionicGesture, AuthService) {
 
     AuthService.currentUser();
+    $scope.details = data.details;
     $scope.data = data.data.data;
+    $scope.used = false;
+
 
     var Latitude = undefined;
     var Longitude = undefined;
-    var options = { enableHighAccuracy: true }; // If not true, app is not working on mobile devices
+    var options = {enableHighAccuracy: true }; // If not true, app is not working on mobile devices
     var marker;
+    var meeting;
+    var listenerHandle;
 
     // Get geo coordinates
 
@@ -72,9 +77,12 @@ myApp.controller('MapCtrl', ['$scope', '$ionicLoading', 'AuthService', function 
         });
 
         // Known bug requires 2 calls, so the second can work properly ...
+
+
         navigator.geolocation.getCurrentPosition(function () { }, function () { }, {});
         navigator.geolocation.getCurrentPosition
         (onMapSuccess, onMapError, options);
+
     }
 
     // Success callback for get geo coordinates
@@ -93,6 +101,10 @@ myApp.controller('MapCtrl', ['$scope', '$ionicLoading', 'AuthService', function 
 
     function getMap(latitude, longitude) {
 
+        var meetingCheck = $scope.data.meeting[2];
+
+        console.log(meetingCheck + "is trueee");
+
         var mapOptions = {
             center: new google.maps.LatLng(0, 0),
             zoom: 1,
@@ -102,35 +114,93 @@ myApp.controller('MapCtrl', ['$scope', '$ionicLoading', 'AuthService', function 
         map = new google.maps.Map
         (document.getElementById("map"), mapOptions);
 
+        var add = true;
+        AuthService.addFriends(add); // Adds friends to map
+
         AuthService.updateCurrent(latitude, longitude); // Updates current user location in database
 
         var latLong = new google.maps.LatLng(latitude, longitude);
         marker = new google.maps.Marker({
-            position: latLong
+            position: latLong,
+            icon: {
+                path: 'M 0,0 C -2,-20 -10,-22 -10,-30 A 10,10 0 1,1 10,-30 C 10,-22 2,-20 0,0 z M -2,-30 a 2,2 0 1,1 4,0 2,2 0 1,1 -4,0',
+                fillColor: "#387ef5",
+                fillOpacity: 1,
+                scale: 1,
+            },
+            title: "Me",
+            zIndex: 100
         });
 
         marker.setMap(map);
         map.setZoom(15);
         map.setCenter(marker.getPosition());
 
-        // Adding friends markers to map
+        // Add and remove meeting marker on hold
 
-        var friendsData = $scope.data.friends;
+        var icon = {
+            url: "img/meeting.png",
+            scaledSize: new google.maps.Size(40, 40),
+            origin: new google.maps.Point(0, 0),
+            anchor: new google.maps.Point(20, 20)
+        };
 
-        for (var friendsName in friendsData) {
-            console.log((friendsName, friendsData[friendsName])[1]);
+        if (meetingCheck) {
+            console.log("Hello");
+            placeMarker($scope.data.meeting[1]);
+        };
 
-            var latID = (friendsName, friendsData[friendsName])[1][0];
-            var longID = (friendsName, friendsData[friendsName])[1][1];
+        var element = angular.element(document.querySelector('#map'));
 
-            var latiLongi = new google.maps.LatLng(latID, longID);
-
-            var friendMarker = new google.maps.Marker({
-                position: latiLongi
+        $ionicGesture.on('hold', function (e) {
+            $scope.$apply(function () {
+                console.log('hold');
+                if (!$scope.data.meeting[2]) {
+                    console.log($scope.data.meeting[2] + "1");
+                    listenerHandle = google.maps.event.addListener(map, 'mouseup', function (event) {
+                        placeMarker(event.latLng);
+                    });
+                }
+                else if ($scope.data.meeting[2] == true && $scope.data.meeting[0] == $scope.details.username) {
+                    if ($scope.used) {
+                        meeting.setMap(null);
+                        $scope.data.meeting[0] = "";
+                        $scope.data.meeting[1] = null;
+                        $scope.data.meeting[2] = false;
+                        AuthService.addMeeting(false);
+                        $scope.used = false;
+                    }
+                }
+                else {
+                    alert("A meeting is already set by one of your friends!");
+                }
             });
+        }, element);
 
-            friendMarker.setMap(map);
-            
+        function placeMarker(location) {
+            if (!$scope.used) {
+                    meeting = new google.maps.Marker({
+                        position: location,
+                        icon: icon,
+                        scale: 1,
+                        map: map
+                    });
+                    var contentString = "Meeting created by " + $scope.data.meeting[0];
+                    var infowindow = new google.maps.InfoWindow({
+                        content: contentString
+                    });
+                meeting.addListener('click', function () {
+                    infowindow.open(map, meeting);
+                });
+                $scope.used = true;
+                if ($scope.data.meeting[0] == "") {
+                    $scope.data.meeting[0] = $scope.details.username;
+                }        
+                $scope.data.meeting[1] = location;
+                $scope.data.meeting[2] = true;
+                AuthService.addMeeting(true);
+                google.maps.event.removeListener(listenerHandle);
+            }
         }
     }
 
@@ -147,12 +217,11 @@ myApp.controller('MapCtrl', ['$scope', '$ionicLoading', 'AuthService', function 
     // Success callback for watching your changing position
 
     var Updatesuccess = function (position) {
-
         var updatedLatitude = position.coords.latitude;
         var updatedLongitude = position.coords.longitude;
 
-        console.log(updatedLatitude);
-        console.log(updatedLongitude);
+        //console.log(updatedLatitude);
+        //console.log(updatedLongitude);
 
         if (updatedLatitude != Latitude || updatedLongitude != Longitude) {
 
@@ -169,19 +238,21 @@ myApp.controller('MapCtrl', ['$scope', '$ionicLoading', 'AuthService', function 
     function onMapError(error) {
         console.log('code: ' + error.code + '\n' +
             'message: ' + error.message + '\n');
+        $ionicLoading.hide();
+        alert("Something went wrong, please log in again!");
     }
-
-    // Watching for current user's position changes
-
-    var id;
-
-    id = navigator.geolocation.watchPosition(Updatesuccess, onMapError, options);
 
     // Initialize map when device is ready
 
     ionic.Platform.ready(function () {
         initMap();
     });
+
+    // Watching for current user's position changes
+
+    var id;
+
+    id = navigator.geolocation.watchPosition(Updatesuccess, onMapError, options);
 
 }]);
 

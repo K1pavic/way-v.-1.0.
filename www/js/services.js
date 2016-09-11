@@ -1,5 +1,7 @@
 ﻿myApp.service('AuthService', ['$q', '$http', function($q, $http) {
 
+    var friendObj = {};
+
     this.doLogin = function(user) {
         var deferred = $q.defer(),
             authProvider = 'basic',
@@ -57,7 +59,8 @@
         var listOffriends = {};
         data.set('locationSharing', false);
         data.set('friends', listOffriends);
-        data.set('position', [0,0]);
+        data.set('position', [0, 0]);
+        data.set('meeting', ['', '', false]);
         data.save();
     };
 
@@ -114,9 +117,9 @@
         newPos[0] = lat;
         newPos[1] = long;
         data.save();
-        console.log("Saved new position!");
+       // console.log("Saved new position!");
 
-        this.updateDistant();
+       // this.updateDistant();
 
     };
 
@@ -124,7 +127,7 @@
 
         var friends = data.data.data.friends;
         for (var friendName in friends) {
-            console.log("Hello " + friendName);
+           // console.log("Hello " + friendName);
             var friendID = (friendName, friends[friendName])[0];
             this.syncData(friendID);
         };
@@ -141,7 +144,7 @@
         })
             .then(function successCallback(response) {
                 var currentPos = data.data.data.position;
-                console.log("Getting friends data..." + friendID);
+                //console.log("Getting friends data..." + friendID);
                 response.data.data.friends[data.details.username][1] = currentPos;
                 var updatePos = response.data.data;
 
@@ -154,7 +157,7 @@
                     },
                 })
                 .then(function successCallback(response) {
-                    console.log("Updated! " + friendID);
+                    //console.log("Updated! " + friendID);
                 }, function errorCallback(error) {
                     console.log("Somehting went wrong!")
                     console.log(error);
@@ -164,6 +167,101 @@
                 console.log("Somehting went wrong!")
                 console.log(error);
             });
+
+    };
+
+    this.addMeeting = function (value) {
+
+        if (value) {
+            data.set('meeting', [data.data.data.meeting[0], data.data.data.meeting[1], data.data.data.meeting[2]]);
+        }
+        data.save();
+        var friends = data.data.data.friends;
+        for (var friendName in friends) {
+            // console.log("Hello " + friendName);
+            var friendID = (friendName, friends[friendName])[0];
+            this.syncMeeting(friendID);
+        };
+    };
+
+    this.syncMeeting = function (friendID) {
+
+        $http({
+            method: 'GET',
+            url: "https://api.ionic.io/users/" + friendID + "/custom",
+            headers: {
+                'Authorization': 'Bearer ' + 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJhOTUxMzQ4Yi1hNmNhLTQ0OTctYjllMC1jMDk0ZmY3OTUxMjUifQ.lUsX1ByZ4v5A2RChYEBHZLAc10lteKUyS-Kd2XTgTzY'
+            },
+        })
+            .then(function successCallback(response) {
+                var meetingData = data.data.data.meeting;
+                //console.log("Getting friends data..." + friendID);
+                response.data.data.meeting = meetingData;
+                var updateMeeting = response.data.data;
+
+                $http({
+                    method: 'PUT',
+                    url: "https://api.ionic.io/users/" + friendID + "/custom",
+                    data: updateMeeting,
+                    headers: {
+                        'Authorization': 'Bearer ' + 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJhOTUxMzQ4Yi1hNmNhLTQ0OTctYjllMC1jMDk0ZmY3OTUxMjUifQ.lUsX1ByZ4v5A2RChYEBHZLAc10lteKUyS-Kd2XTgTzY'
+                    },
+                })
+                .then(function successCallback(response) {
+                    //console.log("Updated! " + friendID);
+                }, function errorCallback(error) {
+                    console.log("Somehting went wrong!")
+                    console.log(error);
+                });
+
+            }, function errorCallback(error) {
+                console.log("Somehting went wrong!")
+                console.log(error);
+            });
+
+    };
+
+    this.addFriends = function (update) {
+
+        var friendsData = data.data.data.friends;
+        if (update) {
+            for (var friendsName in friendsData) {
+
+                //console.log((friendsName, friendsData[friendsName])[1]);
+
+                var latID = (friendsName, friendsData[friendsName])[1][0];
+                var longID = (friendsName, friendsData[friendsName])[1][1];
+
+                var latiLongi = new google.maps.LatLng(latID, longID);
+
+                var friendMarker = new google.maps.Marker({
+                    position: latiLongi,
+                    title: friendsName,
+                    label: friendsName[0],
+                    zIndex: 0
+                });
+
+                friendMarker.setMap(map);
+
+                friendObj[friendsName] = friendMarker;
+                console.log(friendObj);
+            }
+        } else {
+
+            for (friendsName in friendsData) {
+                //console.log((friendsName, friendsData[friendsName])[1]);
+                var i = 0;
+                var latIDnew = (friendsName, friendsData[friendsName])[1][0];
+                var longIDnew = (friendsName, friendsData[friendsName])[1][1];
+
+                var latiLongiNew = new google.maps.LatLng(latIDnew, longIDnew);
+
+                friendObj[friendsName].setPosition(latiLongiNew);
+
+                console.log("Maybe working!");
+
+            }
+        }
 
     };
 

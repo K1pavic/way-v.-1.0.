@@ -74,4 +74,6 @@
   <preference name="WindowsStoreDisplayName" value="WAY" />
   <plugin name="ionic-plugin-keyboard" spec="~2.2.1" />
   <plugin name="cordova-plugin-inappbrowser" version="1.4.0" />
+  <plugin name="cordova-plugin-compat" version="1.0.0" />
+  <plugin name="cordova-plugin-geolocation" version="2.2.0" />
 </widget>
