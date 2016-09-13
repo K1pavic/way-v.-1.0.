@@ -53,13 +53,12 @@ myApp.controller('ProfileCtrl', ['$scope', '$http', 'AuthService', function ($sc
 
 }]);
 
-myApp.controller('MapCtrl', ['$scope', '$ionicLoading', '$ionicGesture', 'AuthService', function ($scope, $ionicLoading, $ionicGesture, AuthService) {
+myApp.controller('MapCtrl', ['$scope', '$ionicLoading', '$ionicGesture', '$ionicPopup', '$timeout', '$interval', 'AuthService', function ($scope, $ionicLoading, $ionicGesture, $ionicPopup, $timeout, $interval, AuthService) {
 
     AuthService.currentUser();
     $scope.details = data.details;
     $scope.data = data.data.data;
     $scope.used = false;
-
 
     var Latitude = undefined;
     var Longitude = undefined;
@@ -67,6 +66,8 @@ myApp.controller('MapCtrl', ['$scope', '$ionicLoading', '$ionicGesture', 'AuthSe
     var marker;
     var meeting;
     var listenerHandle;
+    var element = angular.element(document.querySelector('#map'));
+    var timer;
 
     // Get geo coordinates
 
@@ -77,7 +78,6 @@ myApp.controller('MapCtrl', ['$scope', '$ionicLoading', '$ionicGesture', 'AuthSe
         });
 
         // Known bug requires 2 calls, so the second can work properly ...
-
 
         navigator.geolocation.getCurrentPosition(function () { }, function () { }, {});
         navigator.geolocation.getCurrentPosition
@@ -93,6 +93,7 @@ myApp.controller('MapCtrl', ['$scope', '$ionicLoading', '$ionicGesture', 'AuthSe
         Longitude = position.coords.longitude;
 
         $ionicLoading.hide();
+        AuthService.updateCurrent(Latitude, Longitude); // Updates current user location in database
         getMap(Latitude, Longitude);
 
     }
@@ -102,9 +103,7 @@ myApp.controller('MapCtrl', ['$scope', '$ionicLoading', '$ionicGesture', 'AuthSe
     function getMap(latitude, longitude) {
 
         var meetingCheck = $scope.data.meeting[2];
-
-        console.log(meetingCheck + "is trueee");
-
+        var add = true;
         var mapOptions = {
             center: new google.maps.LatLng(0, 0),
             zoom: 1,
@@ -113,11 +112,6 @@ myApp.controller('MapCtrl', ['$scope', '$ionicLoading', '$ionicGesture', 'AuthSe
 
         map = new google.maps.Map
         (document.getElementById("map"), mapOptions);
-
-        var add = true;
-        AuthService.addFriends(add); // Adds friends to map
-
-        AuthService.updateCurrent(latitude, longitude); // Updates current user location in database
 
         var latLong = new google.maps.LatLng(latitude, longitude);
         marker = new google.maps.Marker({
@@ -136,73 +130,126 @@ myApp.controller('MapCtrl', ['$scope', '$ionicLoading', '$ionicGesture', 'AuthSe
         map.setZoom(15);
         map.setCenter(marker.getPosition());
 
+        AuthService.addFriends(add); // Adds friends to map
+
         // Add and remove meeting marker on hold
 
         var icon = {
-            url: "img/meeting.png",
+            url: "img/meeting2.png",
             scaledSize: new google.maps.Size(40, 40),
             origin: new google.maps.Point(0, 0),
             anchor: new google.maps.Point(20, 20)
         };
 
         if (meetingCheck) {
-            console.log("Hello");
             placeMarker($scope.data.meeting[1]);
         };
-
-        var element = angular.element(document.querySelector('#map'));
 
         $ionicGesture.on('hold', function (e) {
             $scope.$apply(function () {
                 console.log('hold');
                 if (!$scope.data.meeting[2]) {
                     console.log($scope.data.meeting[2] + "1");
+                    markerInterval(true);
                     listenerHandle = google.maps.event.addListener(map, 'mouseup', function (event) {
-                        placeMarker(event.latLng);
+                        var myPopup = $ionicPopup.show({
+                            template: '<input type="time" ng-model="data.meetingTime">',
+                            title: 'Enter Meeting Time',
+                            scope: $scope,
+                            buttons: [
+                              { text: 'Cancel' },
+                              {
+                                  text: '<b>Save</b>',
+                                  type: 'button-positive',
+                                  onTap: function (e) {
+                                      if (!$scope.data.meetingTime) {
+                                          //don't allow the user to close unless he enters wifi password
+                                          e.preventDefault();
+                                      } else {
+                                          placeMarker(event.latLng);
+                                          markerInterval(false)
+                                          return $scope.data.meetingTime;
+                                      }
+                                  }
+                              }
+                            ]
+                        });
                     });
                 }
                 else if ($scope.data.meeting[2] == true && $scope.data.meeting[0] == $scope.details.username) {
+                    markerInterval(true);
                     if ($scope.used) {
                         meeting.setMap(null);
                         $scope.data.meeting[0] = "";
                         $scope.data.meeting[1] = null;
                         $scope.data.meeting[2] = false;
+                        console.log(data);
                         AuthService.addMeeting(false);
                         $scope.used = false;
                     }
+                    markerInterval(false);
                 }
                 else {
-                    alert("A meeting is already set by one of your friends!");
-                }
+                    var alertPopup = $ionicPopup.alert({
+                        title: 'Meeting',
+                        template: 'A meeting is already set by one of your friends!'
+                    });
+                    $timeout(function() {
+                        alertPopup.close(); //close the popup after 3 seconds for some reason
+                    }, 3000);
+                };
             });
         }, element);
 
         function placeMarker(location) {
             if (!$scope.used) {
-                    meeting = new google.maps.Marker({
-                        position: location,
-                        icon: icon,
-                        scale: 1,
-                        map: map
-                    });
-                    var contentString = "Meeting created by " + $scope.data.meeting[0];
-                    var infowindow = new google.maps.InfoWindow({
-                        content: contentString
-                    });
+                console.log("Will create meeting in DB");
+                meeting = new google.maps.Marker({
+                    position: location,
+                    icon: icon,
+                    scale: 1,
+                    map: map
+                });
                 meeting.addListener('click', function () {
                     infowindow.open(map, meeting);
                 });
                 $scope.used = true;
                 if ($scope.data.meeting[0] == "") {
                     $scope.data.meeting[0] = $scope.details.username;
-                }        
-                $scope.data.meeting[1] = location;
-                $scope.data.meeting[2] = true;
+                }
+                var meetingTimeSet = $scope.data.meetingTime;
+                console.log(meetingTimeSet);
+                var contentString = "Meeting created by " + $scope.data.meeting[0] + "</ br>" + " " + meetingTimeSet;
+                var infowindow = new google.maps.InfoWindow({
+                    content: contentString
+                });
+                AuthService.currentUser();
+                data.data.data.meeting[1] = location;
+                data.data.data.meeting[2] = true;
+                data.data.data.meeting[0] = $scope.data.meeting[0]
+                data.save();
                 AuthService.addMeeting(true);
                 google.maps.event.removeListener(listenerHandle);
             }
         }
-    }
+
+        markerInterval(false);
+        //var interval = $interval(function () {
+        //    AuthService.addFriends(false);
+        //    console.log("Update!");
+        //}, 3000);
+    };
+
+    var markerInterval = function (stop) {
+        if (stop) {
+            $interval.cancel(timer);
+        } else {
+            timer = $interval(function() {
+                AuthService.addFriends(false);
+                console.log("Working on updates!");
+            }, 5000);
+        }
+    };
 
     // Update current user's marker
 
@@ -210,6 +257,7 @@ myApp.controller('MapCtrl', ['$scope', '$ionicLoading', '$ionicGesture', 'AuthSe
 
         var updatedlatLong = new google.maps.LatLng(updateLat, updateLong);
         marker.setPosition(updatedlatLong);
+        AuthService.updateCurrent(updateLat, updateLong); // Updates current user location in database
         console.log("Position updated!");
 
     };
@@ -220,12 +268,8 @@ myApp.controller('MapCtrl', ['$scope', '$ionicLoading', '$ionicGesture', 'AuthSe
         var updatedLatitude = position.coords.latitude;
         var updatedLongitude = position.coords.longitude;
 
-        //console.log(updatedLatitude);
-        //console.log(updatedLongitude);
-
         if (updatedLatitude != Latitude || updatedLongitude != Longitude) {
 
-            AuthService.updateCurrent(updatedLatitude, updatedLongitude); // Updates current user location in database
             Latitude = updatedLatitude;
             Longitude = updatedLongitude;
             updateMarker(updatedLatitude, updatedLongitude);
@@ -239,7 +283,6 @@ myApp.controller('MapCtrl', ['$scope', '$ionicLoading', '$ionicGesture', 'AuthSe
         console.log('code: ' + error.code + '\n' +
             'message: ' + error.message + '\n');
         $ionicLoading.hide();
-        alert("Something went wrong, please log in again!");
     }
 
     // Initialize map when device is ready
@@ -261,7 +304,7 @@ myApp.controller('MoreCtrl', ['$scope', '$state', 'AuthService', function ($scop
     $scope.logout = function () {
         AuthService.doLogout();
         $state.go('get-started');
-    }
+    };
 
 }]);
 
@@ -300,4 +343,3 @@ myApp.controller('AddFriends', ['$scope', 'AuthService', function ($scope, AuthS
     };
 
 }]);
-
