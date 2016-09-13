@@ -130,7 +130,6 @@
         this.currentUser();
         var friends = data.data.data.friends;
         for (var friendName in friends) {
-            console.log("Hello " + friendName);
             var friendID = (friendName, friends[friendName])[0];
             this.syncData(friendID, friendName);
         };
@@ -176,12 +175,13 @@
 
         this.currentUser();
         if (value) {
-            console.log("Will create meeting in DB");
-            data.set('meeting', [data.data.data.meeting[0], data.data.data.meeting[1], data.data.data.meeting[2]]);
+            console.log("Meeting will be added");
+            data.set('meeting', [data.data.data.meeting[0], data.data.data.meeting[1], data.data.data.meeting[2], data.data.data.meeting[3]]);
+            data.save();
         }
         else {
             console.log("Meeting will be deleted!!");
-            data.set('meeting', ["", null, false]);
+            data.set('meeting', ["", null, false, null]);
             data.save();
         }
 
@@ -206,7 +206,6 @@
             .then(function successCallback(response) {
                 var meetingData = data.data.data.meeting;
                 console.log(meetingData);
-                //console.log("Getting friends data..." + friendID);
                 response.data.data.meeting = meetingData;
                 var updateMeeting = response.data.data;
 

@@ -68,6 +68,8 @@ myApp.controller('MapCtrl', ['$scope', '$ionicLoading', '$ionicGesture', '$ionic
     var listenerHandle;
     var element = angular.element(document.querySelector('#map'));
     var timer;
+    var contentString;
+    var meetingTimeSet, x, y, z, w, q;
 
     // Get geo coordinates
 
@@ -142,18 +144,18 @@ myApp.controller('MapCtrl', ['$scope', '$ionicLoading', '$ionicGesture', '$ionic
         };
 
         if (meetingCheck) {
-            placeMarker($scope.data.meeting[1]);
+            placeMarker($scope.data.meeting[1], true);
         };
 
         $ionicGesture.on('hold', function (e) {
             $scope.$apply(function () {
                 console.log('hold');
-                if (!$scope.data.meeting[2]) {
-                    console.log($scope.data.meeting[2] + "1");
+                if (!data.data.data.meeting[2]) {
+                    console.log($scope.data.meeting[2] + " 1");
                     markerInterval(true);
                     listenerHandle = google.maps.event.addListener(map, 'mouseup', function (event) {
                         var myPopup = $ionicPopup.show({
-                            template: '<input type="time" ng-model="data.meetingTime">',
+                            template: '<input type="datetime-local" ng-model="data.meetingTime">',
                             title: 'Enter Meeting Time',
                             scope: $scope,
                             buttons: [
@@ -166,17 +168,17 @@ myApp.controller('MapCtrl', ['$scope', '$ionicLoading', '$ionicGesture', '$ionic
                                           //don't allow the user to close unless he enters wifi password
                                           e.preventDefault();
                                       } else {
-                                          placeMarker(event.latLng);
+                                          placeMarker(event.latLng, false);
                                           markerInterval(false)
-                                          return $scope.data.meetingTime;
                                       }
                                   }
                               }
                             ]
                         });
                     });
+
                 }
-                else if ($scope.data.meeting[2] == true && $scope.data.meeting[0] == $scope.details.username) {
+                else if (data.data.data.meeting[2] == true && data.data.data.meeting[0] == $scope.details.username) {
                     markerInterval(true);
                     if ($scope.used) {
                         meeting.setMap(null);
@@ -186,6 +188,7 @@ myApp.controller('MapCtrl', ['$scope', '$ionicLoading', '$ionicGesture', '$ionic
                         console.log(data);
                         AuthService.addMeeting(false);
                         $scope.used = false;
+                                    google.maps.event.removeListener(listenerHandle);
                     }
                     markerInterval(false);
                 }
@@ -201,43 +204,50 @@ myApp.controller('MapCtrl', ['$scope', '$ionicLoading', '$ionicGesture', '$ionic
             });
         }, element);
 
-        function placeMarker(location) {
+        function placeMarker(location, variable) {
             if (!$scope.used) {
                 console.log("Will create meeting in DB");
+                $scope.used = true;
+                if (variable) {
+                    meetingTimeSet = data.data.data.meeting[3];
+                    AuthService.addMeeting(variable);
+                } else {
+                    meetingTimeSet = $scope.data.meetingTime;
+                    data.data.data.meeting[0] = $scope.details.username;
+                    data.data.data.meeting[1] = location;
+                    data.data.data.meeting[2] = true;
+                    data.data.data.meeting[3] = meetingTimeSet;
+                    AuthService.addMeeting(true);
+                }
+
+                x = new Date(meetingTimeSet);
+                y = x.toLocaleTimeString();
+                z = x.getDate();
+                w = x.getMonth() + 1;
+                q = x.getFullYear();
+                contentString =
+                    '<div><p>Meeting created by <b>' + data.data.data.meeting[0] + '</b> </p>' +
+                    '<p>on ' + z + '.' + w + '.' + q + ' at ' + y + '.</p>';
+
+                var infowindow = new google.maps.InfoWindow({
+                    content: contentString
+                });
+
                 meeting = new google.maps.Marker({
                     position: location,
                     icon: icon,
                     scale: 1,
                     map: map
                 });
+
                 meeting.addListener('click', function () {
                     infowindow.open(map, meeting);
                 });
-                $scope.used = true;
-                if ($scope.data.meeting[0] == "") {
-                    $scope.data.meeting[0] = $scope.details.username;
-                }
-                var meetingTimeSet = $scope.data.meetingTime;
-                console.log(meetingTimeSet);
-                var contentString = "Meeting created by " + $scope.data.meeting[0] + "</ br>" + " " + meetingTimeSet;
-                var infowindow = new google.maps.InfoWindow({
-                    content: contentString
-                });
-                AuthService.currentUser();
-                data.data.data.meeting[1] = location;
-                data.data.data.meeting[2] = true;
-                data.data.data.meeting[0] = $scope.data.meeting[0]
-                data.save();
-                AuthService.addMeeting(true);
-                google.maps.event.removeListener(listenerHandle);
-            }
-        }
 
+            }
+            google.maps.event.removeListener(listenerHandle);
+        }
         markerInterval(false);
-        //var interval = $interval(function () {
-        //    AuthService.addFriends(false);
-        //    console.log("Update!");
-        //}, 3000);
     };
 
     var markerInterval = function (stop) {
@@ -246,7 +256,6 @@ myApp.controller('MapCtrl', ['$scope', '$ionicLoading', '$ionicGesture', '$ionic
         } else {
             timer = $interval(function() {
                 AuthService.addFriends(false);
-                console.log("Working on updates!");
             }, 5000);
         }
     };
