@@ -1,4 +1,4 @@
-﻿myApp.service('AuthService', ['$q', '$http', '$window', '$ionicLoading', '$rootScope', function ($q, $http, $window, $ionicLoading, $rootScope) {
+﻿myApp.service('AuthService', ['$q', '$http', '$ionicLoading', '$rootScope', '$ionicPopup', '$timeout', function ($q, $http, $ionicLoading, $rootScope, $ionicPopup, $timeout) {
 
     var token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJhMmM4YWQyNS0yN2ZiLTRiMzUtOTVkNy1kMTcxZjU5OWQ5YTEifQ.R2KIWtH0vZW_htEHeQmcUK_j3-xw3piD_cSZaRaC-zA';
     var friendObj = {};
@@ -14,10 +14,21 @@
 
         Ionic.Auth.login(authProvider, authSettings, user)
         .then(function () {
+            // success
             deferred.resolve();
             console.log("Login succeded!");
         }, function () {
+            // error
+            $ionicLoading.hide();
             console.log("Login failed!");
+
+            var loginFailed = $ionicPopup.alert({
+                title: 'Error',
+                template: 'Something went wrong, please try again!'
+            });
+            $timeout(function () {
+                loginFailed.close(); //close the popup after 3 seconds for some reason
+            }, 3000);
         });
 
         return deferred.promise;
@@ -40,7 +51,17 @@
                 deferred.reject();
             });
         }, function () {
+            // error
             console.log("Signup failed!");
+            $ionicLoading.hide();
+
+            var signupFailed = $ionicPopup.alert({
+                title: 'Error',
+                template: 'Something went wrong, please try again!'
+            });
+            $timeout(function () {
+                signupFailed.close(); //close the popup after 3 seconds for some reason
+            }, 3000);
         });
 
         return deferred.promise;

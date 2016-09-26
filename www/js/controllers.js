@@ -19,7 +19,6 @@ myApp.controller('LoginCtrl', ['$scope', '$state', '$ionicLoading', 'AuthService
         }, function (err) {
             // error
             $scope.errors = err;
-            $ionicLoading.hide();
         });
     };
 }]);
@@ -41,7 +40,6 @@ myApp.controller('SignupCtrl', ['$scope', '$state', '$ionicLoading', 'AuthServic
         }, function (err) {
             // error
             $scope.errors = err;
-            $ionicLoading.hide();
         });
     };
 }]);
@@ -339,7 +337,9 @@ myApp.controller('LocationSettingsCtrl', ['$scope', 'AuthService', function ($sc
 
 }]);
 
-myApp.controller('AddFriends', ['$scope', 'AuthService', function ($scope, AuthService) {
+myApp.controller('AddFriends', ['$scope', '$ionicPopup', '$timeout', 'AuthService', function ($scope, $ionicPopup, $timeout, AuthService) {
+
+    var flag = false;
 
     $scope.addFriend = function(friend) {
         $scope.friend = friend;
@@ -352,10 +352,30 @@ myApp.controller('AddFriends', ['$scope', 'AuthService', function ($scope, AuthS
             for (i = 0; i < all.length; i++) {
                 if (all[i].details.username === $scope.friend) {
                     var newFriend = all[i];
+                    flag = true;
                     AuthService.currentUser();
                     AuthService.setNewFriend(newFriend);
                 };
             };
+
+            if (flag === true) {
+                flag = false;
+                var friendAdded = $ionicPopup.alert({
+                    title: 'Success!',
+                    template: 'You added ' + $scope.friend + ' to your friends list.'
+                });
+                $timeout(function () {
+                    friendAdded.close(); //close the popup after 3 seconds for some reason
+                }, 3000);
+            } else {
+                var noFriend = $ionicPopup.alert({
+                    title: 'Error!',
+                    template: $scope.friend + ' is not a registered user.'
+                });
+                $timeout(function () {
+                    noFriend.close(); //close the popup after 3 seconds for some reason
+                }, 3000);
+            }
         }, function error() {
             console.log("Something went wrong!");
         });
