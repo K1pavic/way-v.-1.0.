@@ -159,7 +159,12 @@ myApp.controller('MapCtrl', ['$scope', '$ionicLoading', '$ionicGesture', '$ionic
                             title: 'Enter Meeting Time',
                             scope: $scope,
                             buttons: [
-                              { text: 'Cancel' },
+                              {
+                                  text: 'Cancel',
+                                  onTap: function (e) {
+                                  google.maps.event.removeListener(listenerHandle);
+                                  }
+                              },
                               {
                                   text: '<b>Save</b>',
                                   type: 'button-positive',
@@ -188,7 +193,7 @@ myApp.controller('MapCtrl', ['$scope', '$ionicLoading', '$ionicGesture', '$ionic
                         console.log(data);
                         AuthService.addMeeting(false);
                         $scope.used = false;
-                                    google.maps.event.removeListener(listenerHandle);
+                        google.maps.event.removeListener(listenerHandle);
                     }
                     markerInterval(false);
                 }
@@ -256,9 +261,14 @@ myApp.controller('MapCtrl', ['$scope', '$ionicLoading', '$ionicGesture', '$ionic
         } else {
             timer = $interval(function() {
                 AuthService.addFriends(false);
-            }, 5000);
+            }, 10000);
         }
     };
+
+    $scope.$on('logUserOut', function (event) {
+        console.log("Interval stop!");
+        markerInterval(true);
+    });
 
     // Update current user's marker
 

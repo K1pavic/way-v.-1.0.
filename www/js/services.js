@@ -1,7 +1,6 @@
-﻿myApp.service('AuthService', ['$q', '$http', '$window', '$ionicLoading', function($q, $http, $window, $ionicLoading) {
+﻿myApp.service('AuthService', ['$q', '$http', '$window', '$ionicLoading', '$rootScope', function ($q, $http, $window, $ionicLoading, $rootScope) {
 
-    var token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJqdGkiOiI2YjlmYzFiMC1hNDY3LTQwYTUtYjNiMC05N2RiNWMyMzYyNTkifQ.qPoZeTv1505UupW2zmdZLl2ExIWhLp44ISmihzSm98U';
-
+    var token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJhMmM4YWQyNS0yN2ZiLTRiMzUtOTVkNy1kMTcxZjU5OWQ5YTEifQ.R2KIWtH0vZW_htEHeQmcUK_j3-xw3piD_cSZaRaC-zA';
     var friendObj = {};
 
     var friendMarker;
@@ -48,6 +47,7 @@
     };
 
     this.doLogout = function () {
+        $rootScope.$broadcast('logUserOut');
         Ionic.Auth.logout();
         console.log("Logged out!");
     };
@@ -272,6 +272,7 @@
                 var latiLongiNew = new google.maps.LatLng(latIDnew, longIDnew);
 
                 friendObj[friendsNameUpdated].setPosition(latiLongiNew);
+                console.log("Updating friends position!");
             }
         }
 
