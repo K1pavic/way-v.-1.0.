@@ -5,7 +5,7 @@
 
     var friendMarker;
 
-    this.doLogin = function(user) {
+    this.doLogin = function (user) {
         var deferred = $q.defer(),
             authProvider = 'basic',
             authSettings = {
@@ -34,7 +34,7 @@
         return deferred.promise;
     };
 
-    this.doSignup = function(user) {
+    this.doSignup = function (user) {
         var deferred = $q.defer(),
             authService = this;
 
@@ -73,30 +73,31 @@
         console.log("Logged out!");
     };
 
-    this.currentUser = function(dataID) {
+    this.currentUser = function (dataID) {
 
         data = Ionic.User.current(dataID);
-        
+
     };
 
     this.setData = function () {
 
         var listOffriends = {};
-        data.set('locationSharing', false);
+        data.set('locationSharing', true);
+        data.set('gps', true);
         data.set('friends', listOffriends);
         data.set('position', [0, 0]);
         data.set('meeting', ['', '', false]);
         data.save();
     };
 
-    this.getAll = function() {
+    this.getAll = function () {
         return $http({
-                method: 'GET',
-                url: "https://api.ionic.io/users",
-                headers: {
-                    'Authorization': 'Bearer ' + token
-                },
-            })
+            method: 'GET',
+            url: "https://api.ionic.io/users",
+            headers: {
+                'Authorization': 'Bearer ' + token
+            },
+        })
             .then(function successCallback(response) {
                 return response;
             }, function errorCallback(error) {
@@ -120,13 +121,13 @@
         var addCustom = newFriend.custom;
 
         return $http({
-                method: 'PUT',
-                url: "https://api.ionic.io/users/"+newFriend.uuid+"/custom",
-                data: addCustom,
-                headers: {
-                    'Authorization': 'Bearer ' + token
-                },
-                })
+            method: 'PUT',
+            url: "https://api.ionic.io/users/" + newFriend.uuid + "/custom",
+            data: addCustom,
+            headers: {
+                'Authorization': 'Bearer ' + token
+            },
+        })
                 .then(function successCallback(response) {
                     console.log(response);
                     console.log("Updated friends!");
@@ -179,7 +180,7 @@
                     },
                 })
                 .then(function successCallback(response) {
-    
+
                 }, function errorCallback(error) {
                     console.log("Somehting went wrong!")
                     console.log(error);
@@ -209,7 +210,6 @@
         console.log("DB Changes!!!");
         var friends = data.data.data.friends;
         for (var friendName in friends) {
-            // console.log("Hello " + friendName);
             var friendID = (friendName, friends[friendName])[0];
             this.syncMeeting(friendID);
         };
@@ -296,7 +296,6 @@
                 console.log("Updating friends position!");
             }
         }
-
     };
 
 }]);

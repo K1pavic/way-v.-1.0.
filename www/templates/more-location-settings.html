@@ -8,24 +8,32 @@
             <br />
             <br />
 
-            <ion-toggle toggle-class="toggle-positive" ng-model="data.locationSharing" ng-change="toggleChange()">
+            <ion-toggle toggle-class="toggle-positive" ng-model="data.gps" ng-change="toggleChangeGPS()">
+                Get location data (GPS)
+            </ion-toggle>
+            
+            <br />
+            <br />
+
+            <ion-toggle toggle-class="toggle-positive" ng-model="data.locationSharing" ng-change="toggleChangeShare()">
                 Share Location
             </ion-toggle>
 
             <br />
             <br />
 
-            <ion-item>Share Location with...</ion-item>
-            
-            
-            <ion-list>
-                <ion-toggle toggle-class="toggle-positive">
-                    Pero
-                </ion-toggle>
-                <ion-toggle toggle-class="toggle-positive">
-                    Marko
-                </ion-toggle>
-            </ion-list>
+                        <!--<ion-item>Share Location with...</ion-item>
+
+
+    <ion-list>
+        <ion-toggle toggle-class="toggle-positive">
+            Pero
+        </ion-toggle>
+        <ion-toggle toggle-class="toggle-positive">
+            Marko
+        </ion-toggle>
+    </ion-list>-->
+
 
         </ion-list>
 

@@ -25,7 +25,7 @@ myApp.controller('LoginCtrl', ['$scope', '$state', '$ionicLoading', 'AuthService
 
 myApp.controller('SignupCtrl', ['$scope', '$state', '$ionicLoading', 'AuthService', function ($scope, $state, $ionicLoading, AuthService) {
 
-    $scope.signup = function(user) {
+    $scope.signup = function (user) {
         $ionicLoading.show({
             template: 'Signing up ...'
         });
@@ -60,7 +60,7 @@ myApp.controller('MapCtrl', ['$scope', '$ionicLoading', '$ionicGesture', '$ionic
 
     var Latitude = undefined;
     var Longitude = undefined;
-    var options = {enableHighAccuracy: true }; // If not true, app is not working on mobile devices
+    var options = { enableHighAccuracy: true }; // If not true, app is not working on mobile devices
     var marker;
     var meeting;
     var listenerHandle;
@@ -68,6 +68,8 @@ myApp.controller('MapCtrl', ['$scope', '$ionicLoading', '$ionicGesture', '$ionic
     var timer;
     var contentString;
     var meetingTimeSet, x, y, z, w, q;
+    var id;
+    var flag = true;
 
     // Get geo coordinates
 
@@ -160,7 +162,7 @@ myApp.controller('MapCtrl', ['$scope', '$ionicLoading', '$ionicGesture', '$ionic
                               {
                                   text: 'Cancel',
                                   onTap: function (e) {
-                                  google.maps.event.removeListener(listenerHandle);
+                                      google.maps.event.removeListener(listenerHandle);
                                   }
                               },
                               {
@@ -168,7 +170,7 @@ myApp.controller('MapCtrl', ['$scope', '$ionicLoading', '$ionicGesture', '$ionic
                                   type: 'button-positive',
                                   onTap: function (e) {
                                       if (!$scope.data.meetingTime) {
-                                          //don't allow the user to close unless he enters wifi password
+                                          //don't allow the user to close unless he enters data
                                           e.preventDefault();
                                       } else {
                                           placeMarker(event.latLng, false);
@@ -200,7 +202,7 @@ myApp.controller('MapCtrl', ['$scope', '$ionicLoading', '$ionicGesture', '$ionic
                         title: 'Meeting',
                         template: 'A meeting is already set by one of your friends!'
                     });
-                    $timeout(function() {
+                    $timeout(function () {
                         alertPopup.close(); //close the popup after 3 seconds for some reason
                     }, 3000);
                 };
@@ -253,15 +255,34 @@ myApp.controller('MapCtrl', ['$scope', '$ionicLoading', '$ionicGesture', '$ionic
         markerInterval(false);
     };
 
+    // Loop for changing friends markers
+
     var markerInterval = function (stop) {
         if (stop) {
             $interval.cancel(timer);
         } else {
-            timer = $interval(function() {
+            timer = $interval(function () {
                 AuthService.addFriends(false);
+                AuthService.currentUser();
+                $scope.gps = data.data.data.gps;
+
+                console.log($scope.gps + '  ' + flag);
+
+                if ($scope.gps === false && flag === true) {
+                    navigator.geolocation.clearWatch(id);
+                    flag = false;
+                    console.log("Cleared watch!");
+                } else if (flag === false && $scope.gps === true) {
+                    id = navigator.geolocation.watchPosition(Updatesuccess, onMapError, options);
+                    flag = true;
+                    console.log("Set watch!");
+                }
             }, 10000);
         }
+
     };
+
+    // On logout stop above loop
 
     $scope.$on('logUserOut', function (event) {
         console.log("Interval stop!");
@@ -270,12 +291,17 @@ myApp.controller('MapCtrl', ['$scope', '$ionicLoading', '$ionicGesture', '$ionic
 
     // Update current user's marker
 
-    var updateMarker = function(updateLat, updateLong) {
+    var updateMarker = function (updateLat, updateLong) {
 
         var updatedlatLong = new google.maps.LatLng(updateLat, updateLong);
         marker.setPosition(updatedlatLong);
-        AuthService.updateCurrent(updateLat, updateLong); // Updates current user location in database
-        console.log("Position updated!");
+        AuthService.currentUser;
+        $scope.locationSharing = data.data.data.locationSharing;
+
+        if ($scope.locationSharing === true) {
+            AuthService.updateCurrent(updateLat, updateLong); // Updates current user location in database
+            console.log("Position updated!");
+        }
 
     };
 
@@ -310,8 +336,6 @@ myApp.controller('MapCtrl', ['$scope', '$ionicLoading', '$ionicGesture', '$ionic
 
     // Watching for current user's position changes
 
-    var id;
-
     id = navigator.geolocation.watchPosition(Updatesuccess, onMapError, options);
 
 }]);
@@ -329,11 +353,21 @@ myApp.controller('LocationSettingsCtrl', ['$scope', 'AuthService', function ($sc
 
     AuthService.currentUser();
     $scope.data = data.data.data;
+    $scope.data.gps;
+    $scope.data.locationSharing;
 
-    $scope.toggleChange = function () {
-        $scope.data.locationSharing;
+    $scope.toggleChangeGPS = function () {
+        $scope.data.gps;
+        data.data.data.gps = $scope.data.gps;
+        console.log($scope.data.gps);
         data.save();
     };
+
+    $scope.toggleChangeShare = function () {
+        $scope.data.locationSharing;
+        data.data.data.locationSharing = $scope.data.locationSharing;
+        data.save();
+    }
 
 }]);
 
@@ -341,7 +375,7 @@ myApp.controller('AddFriends', ['$scope', '$ionicPopup', '$timeout', 'AuthServic
 
     var flag = false;
 
-    $scope.addFriend = function(friend) {
+    $scope.addFriend = function (friend) {
         $scope.friend = friend;
 
         AuthService.getAll()
